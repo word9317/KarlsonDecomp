@@ -1,67 +1,67 @@
-using EZCameraShake;
 using UnityEngine;
 
 public class MenuCamera : MonoBehaviour
 {
-	private Vector3 startPos;
+    private Vector3 startPos;
+    private Vector3 optionsPos = new Vector3(0f, 3.6f, 8f);
+    private Vector3 playPos = new Vector3(1f, 4.6f, 5.5f);
+    private Vector3 aboutPos = new Vector3(1f, 5.5f, 5.5f);
+    
+    private Vector3 desiredPos;
+    private Quaternion desiredRot;
 
-	private Vector3 options = new Vector3(0f, 3.6f, 8f);
+    private Quaternion startRot;
+    private Quaternion optionsRot;
+    private Quaternion playRot;
+    private Quaternion aboutRot;
 
-	private Vector3 play = new Vector3(1f, 4.6f, 5.5f);
+    public float moveSpeed = 5f;
+    public float rotSpeed = 5f;
 
-	private Vector3 about = new Vector3(1f, 5.5f, 5.5f);
+    private void Start()
+    {
+        startPos = transform.position;
+        desiredPos = startPos;
+        
+        optionsPos += startPos;
+        playPos += startPos;
+        aboutPos += startPos;
 
-	private Vector3 desiredPos;
+        startRot = transform.rotation;
+        desiredRot = startRot;
 
-	private Vector3 posVel;
+        optionsRot = startRot * Quaternion.Euler(0f, 0f, 0f);
+        playRot = startRot * Quaternion.Euler(0f, 90f, 0f);
+        aboutRot = startRot * Quaternion.Euler(-90f, 0f, 0f);
+    }
 
-	private Vector3 startRot;
+    private void Update()
+    {
+        transform.position = Vector3.Lerp(transform.position, desiredPos, Time.deltaTime * moveSpeed);
+        transform.rotation = Quaternion.Slerp(transform.rotation, desiredRot, Time.deltaTime * rotSpeed);
+    }
 
-	private Vector3 playRot;
+    public void Options()
+    {
+        desiredPos = optionsPos;
+        desiredRot = optionsRot;
+    }
 
-	private Vector3 aboutRot;
+    public void Main()
+    {
+        desiredPos = startPos;
+        desiredRot = startRot;
+    }
 
-	private Quaternion desiredRot;
+    public void Play()
+    {
+        desiredPos = playPos;
+        desiredRot = playRot;
+    }
 
-	private void Start()
-	{
-		startPos = base.transform.position;
-		desiredPos = startPos;
-		options += startPos;
-		play += startPos;
-		about += startPos;
-		CameraShaker.Instance.StartShake(1f, 0.04f, 0.1f);
-		startRot = Vector3.zero;
-		playRot = new Vector3(0f, 90f, 0f);
-		aboutRot = new Vector3(-90f, 0f, 0f);
-	}
-
-	private void Update()
-	{
-		base.transform.position = Vector3.SmoothDamp(base.transform.position, desiredPos, ref posVel, 0.4f);
-		base.transform.rotation = Quaternion.Slerp(base.transform.rotation, desiredRot, Time.deltaTime * 4f);
-	}
-
-	public void Options()
-	{
-		desiredPos = options;
-	}
-
-	public void Main()
-	{
-		desiredPos = startPos;
-		desiredRot = Quaternion.Euler(startRot);
-	}
-
-	public void Play()
-	{
-		desiredPos = play;
-		desiredRot = Quaternion.Euler(playRot);
-	}
-
-	public void About()
-	{
-		desiredPos = about;
-		desiredRot = Quaternion.Euler(aboutRot);
-	}
+    public void About()
+    {
+        desiredPos = aboutPos;
+        desiredRot = aboutRot;
+    }
 }
